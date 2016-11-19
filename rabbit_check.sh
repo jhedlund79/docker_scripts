@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# This script is for setting up a rabbitmq docker container for testing
+# rabbitmq on a local machine. It enables x-recent-history and management
+# plugins and exposes ports 5672 and 15672 on localhost. Being that exposing
+# ports can only be done when creating a container, this script will remove
+# any running container with the name rabbitmq so we can make sure it is
+# configured with the ports we want exposed.
+
 #kill rabbitmq container
 kill_old_rabbit (){
   comm=$(docker ps | grep 'rabbit')
@@ -79,11 +86,6 @@ enable_rabbit_plugin (){
 kill_old_rabbit
 #create the container
 create_rabbit_container
-if [ $? != 0 ];then
-  echo "failed to create a rabbitmq container please check that docker is\n
-        running and run this script again. exiting... "
-  exit 1
-fi
 # check if container created is up and then enable the x-recent-history
 # and rabbitmq_management plugins
 check_rabbit
