@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script checks the results of mssql_setup.sh and returns whether
+# the test mssql db is ready for testing
 export light_red="\033[31m"
 export light_green="\033[32m"
 export dark_grey="\033[1;30m"

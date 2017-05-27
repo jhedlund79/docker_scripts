@@ -1,11 +1,16 @@
 #!/bin/bash
 
+# This script is for setting up a mssql docker container for testing
+# applications using mssql on a local machine. It exposes ports 1433 on localhost.
+# Being that exposing ports can only be done when creating a container, this script will remove
+# any existing container, running or not, with the name mssql so we can make sure the
+# database is fresh with no exisiting data.
 export light_red="\033[31m"
 export light_green="\033[32m"
 export dark_grey="\033[1;30m"
 export reset_color="\033[0m"
 
-#kill mssql container
+#kill old mssql container
 kill_old_mssql (){
   printf "${dark_grey}checking docker for old mssql mq container...\n"
   comm=$(docker ps -a | grep 'mssql')
@@ -25,7 +30,7 @@ kill_old_mssql (){
 
 }
 
-# check docker for a running rabbitmq container
+# check docker for a running mssql container
 check_mssql (){
   printf "${dark_grey}checking docker for running mssql mq container...\n"
   comm2=$(docker ps -a | grep 'mssql')
@@ -56,6 +61,7 @@ create_mssql_container (){
 }
 
 # check system for globbaly installed mssql cli
+# if not present installs using npm.
 check_mssql_cli_installed (){
   printf "${dark_grey}checking if mssql cli installed...\n"
   comm2=$(npm list -g | grep sql-cli)
@@ -80,20 +86,22 @@ check_mssql_cli_installed (){
   fi
 }
 
-#get rid of old container ot start fresh
+# get rid of old container to start fresh
 kill_old_mssql
-#create the container
+# create the container
 create_mssql_container
+
 # check if container created is up
 check_mssql
 sleep 2
 
 check_mssql_cli_installed
-#login to the mssql instance ang run setup script
+# login to the mssql instance
 printf "${dark_grey}** logging in to mssql **\n"
 mssql -u sa -p pass@word1
 sleep 2
-#not yet working
+
+# run setup script
 printf "\n${dark_grey}** creating isolated test db **\n"
 mssql -u sa -p pass@word1 < setup_database.sql
 printf ${reset_color}
