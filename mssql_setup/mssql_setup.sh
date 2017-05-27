@@ -8,7 +8,7 @@ export reset_color="\033[0m"
 #kill mssql container
 kill_old_mssql (){
   printf "${dark_grey}checking docker for old mssql mq container...\n"
-  comm=$(docker ps | grep 'mssql')
+  comm=$(docker ps -a | grep 'mssql')
   comm_output=( $comm )
   old_cid=${comm_output[0]}
   if [ $old_cid ];then
@@ -19,7 +19,7 @@ kill_old_mssql (){
       return 0
     fi
   else
-    printf "${light_red}cannot find msql container\n"
+    printf "${dark_grey}cannot find msql container\n"
     return 1
   fi
 
